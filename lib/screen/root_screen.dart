@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+import 'package:flutter/material.dart' show BottomNavigationBar, BottomNavigationBarItem, BuildContext, Icon, Icons, Key, Scaffold, SingleTickerProviderStateMixin, State, StatefulWidget, TabBarView, TabController, Widget;
 import 'calendar_screen.dart';
 import 'home_screen.dart';
 import 'running_screen.dart';
