@@ -1,6 +1,20 @@
+buildscript {
+    repositories {
+        google()  // Firebase 관련 저장소
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0'
+
+        // Firebase 플러그인 클래스패스 추가
+        classpath 'com.google.gms:google-services:4.3.15'  // 최신 버전 사용
+    }
+}
+
 allprojects {
     repositories {
-        google()
+        google()  // Firebase 관련 저장소
         mavenCentral()
     }
 }
