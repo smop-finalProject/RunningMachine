@@ -180,17 +180,24 @@ class _RunningScreenState extends State<RunningScreen> {
   }
 
   Future<void> saveRunToFirebase() async {
+    // 경로 데이터를 저장 가능한 형태로 변환
+    final List<Map<String, double>> routeData = routePoints
+        .map((point) => {'latitude': point.latitude, 'longitude': point.longitude})
+        .toList();
+
     final runRecord = {
-      'distance': totalDistance,
+      'distance': totalDistance.toStringAsFixed(2),
       'time': elapsedSeconds,
       'speed': currentSpeed,
       'timestamp': Timestamp.now(),
+      'route': routeData, // 경로 데이터 추가
     };
 
     // Firestore에 저장
     await FirebaseFirestore.instance.collection('runs').add(runRecord);
-    print('운동 기록이 Firebase에 저장되었습니다.');
+    print('운동 기록 및 경로가 Firebase에 저장되었습니다.');
   }
+
 
   @override
   void dispose() {
