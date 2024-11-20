@@ -2,8 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
-    // Firebase 플러그인 추가
-    id 'com.google.gms.google-services'  // 이 줄을 추가
+    id 'com.google.gms.google-services'  // Firebase 플러그인
 }
 
 android {
@@ -22,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.RuningMachine"  // 실제 패키지 이름을 여기에 맞게 설정
-        minSdk = 20
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
