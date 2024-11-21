@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => onLogoutPress(context), // Firebase 로그아웃 함수 호출
+            onPressed: () => handleFirebaseLogout(context), // Firebase 로그아웃 함수 호출
           ),
         ],
       ),
@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
 
               // Firebase 로그아웃 버튼
               ElevatedButton(
-                onPressed: () => onLogoutPress(context),
+                onPressed: () => handleFirebaseLogout(context),
                 child: const Text('파이어베이스 로그아웃'),
               ),
 
@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
 
               // 카카오 로그아웃 버튼
               ElevatedButton(
-                onPressed: () => onKakaoLogoutPress(context),
+                onPressed: () => handleKakaoLogout(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow[700], // 카카오 스타일 색상
                   foregroundColor: Colors.black, // 텍스트 색상
@@ -53,8 +53,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // Firebase 로그아웃 함수
-  void onLogoutPress(BuildContext context) async {
+  // Firebase 로그아웃 처리 함수
+  Future<void> handleFirebaseLogout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut(); // Firebase 로그아웃
       Navigator.of(context).pushAndRemoveUntil(
@@ -68,20 +68,17 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  // 카카오 로그아웃 함수
-  void onKakaoLogoutPress(BuildContext context) async {
+  // Kakao 로그아웃 처리 함수
+  Future<void> handleKakaoLogout(BuildContext context) async {
     try {
-      await UserApi.instance.logout(); // 카카오 로그아웃
+      await UserApi.instance.logout(); // Kakao 로그아웃
+      print('로그아웃 성공, SDK에서 토큰 삭제');
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const AuthScreen()), // AuthScreen으로 이동
             (route) => false,
       );
-      print('카카오 로그아웃 성공');
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('카카오 로그아웃 실패')),
-      );
-      print('카카오 로그아웃 실패 $error');
+      print('로그아웃 실패, SDK에서 토큰 삭제 $error');
     }
   }
 }
