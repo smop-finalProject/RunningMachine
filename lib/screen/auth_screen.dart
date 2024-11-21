@@ -17,6 +17,20 @@ class AuthScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // 제목 부분
+            Center(
+              child: Text(
+                '맨발의 기봉이', // 여기에 앱의 이름을 넣으세요
+                style: TextStyle(
+                  fontSize: 40, // 폰트 크기
+                  fontWeight: FontWeight.w800, // 폰트 굵기
+                  color: Colors.black, // 텍스트 색상
+                  fontFamily: 'CustomFont', // 커스텀 폰트
+                ),
+              ),
+            ),
+            const SizedBox(height: 30.0),
+
             // 로고 이미지
             Center(
               child: FractionallySizedBox(
@@ -119,6 +133,13 @@ class AuthScreen extends StatelessWidget {
   // 카카오 로그인 함수
   void onKakaoLoginPress(BuildContext context) async {
     try {
+      var provider = OAuthProvider("oidc.runningmachine");
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+      var credential = provider.credential(
+        idToken: token.idToken,
+        accessToken: token.accessToken
+      );
+      FirebaseAuth.instance.signInWithCredential(credential);
       bool loginSuccess = await signWithKakao();
       if (loginSuccess) {
         // 로그인 성공 시 HomeScreen으로 이동
