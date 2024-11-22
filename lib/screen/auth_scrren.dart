@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smop_final/screen/root_screen.dart';
 
+
 import 'auth_home.dart';
 
 class Auth extends StatelessWidget{
