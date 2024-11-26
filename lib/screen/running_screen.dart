@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -218,6 +219,7 @@ class _RunningScreenState extends State<RunningScreen> {
   }
 
   Future<void> saveRunToFirebase() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid; //UID(user id)를 가져와 Firestore 저장할 때 사용하기
     // 경로 데이터를 저장 가능한 형태로 변환
     final List<Map<String, double>> routeData = routePoints
         .map((point) => {'latitude': point.latitude, 'longitude': point.longitude})
@@ -232,7 +234,12 @@ class _RunningScreenState extends State<RunningScreen> {
     };
 
     // Firestore에 저장
-    await FirebaseFirestore.instance.collection('runs').add(runRecord);
+    await FirebaseFirestore.instance
+        .collection('users') //컬렉션 1번
+        .doc(userId) //유저아이디를 가져와서 유저 구분해서 저장하기
+        .collection('runs') // 컬렉션 2번(users안에있는 컬랙션)
+        .add(runRecord) // 달리기 기록 저장하기
+        ;
     print('운동 기록 및 경로가 Firebase에 저장되었습니다.');
   }
 
