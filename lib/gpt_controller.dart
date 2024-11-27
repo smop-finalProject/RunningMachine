@@ -30,7 +30,7 @@ Future<String> generateResponse(String input, double latitude, double longitude)
   // 위치 정보를 포함한 프롬프트 생성
   String prompt = "$input\nYour location: latitude $latitude, longitude $longitude.";
 
-  String token = "Bearer 여기다가 api키 치기 bearer 지우면안됌!!!!!!!!!!!!!!!1 ";
+  String token = "Bearer";
 
   var response = await http.post(
     Uri.parse("https://api.openai.com/v1/chat/completions"),
