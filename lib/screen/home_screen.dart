@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import 'chat_screen.dart'; // ChatBotScreen 임포트
 
 class HomeScreen extends StatefulWidget {
   final Function(bool isVisible) onToggleBottomNav; // Callback to toggle Bottom Navigation Bar
@@ -74,36 +75,49 @@ class _HomeScreenState extends State<HomeScreen> {
       statusBarIconBrightness: Brightness.dark,
     ));
 
-    return PageView.builder(
-      controller: pageController,
-      itemCount: 4,
-      onPageChanged: updateBottomNavVisibility, // Update visibility on page change
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onVerticalDragUpdate: (details) {
-            if (details.delta.dy < -10 && !isTextVisible[index]) {
-              setState(() {
-                isTextVisible[index] = true;
-                widget.onToggleBottomNav(true); // Show Bottom Navigation Bar
-              });
-            } else if (details.delta.dy > 10 && isTextVisible[index]) {
-              setState(() {
-                isTextVisible[index] = false;
-                widget.onToggleBottomNav(false); // Hide Bottom Navigation Bar
-              });
-            }
-          },
-          child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 500),
-            transitionBuilder: (child, animation) {
-              return FadeTransition(opacity: animation, child: child);
+    return Scaffold(
+      body: PageView.builder(
+        controller: pageController,
+        itemCount: 4,
+        onPageChanged: updateBottomNavVisibility, // Update visibility on page change
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onVerticalDragUpdate: (details) {
+              if (details.delta.dy < -10 && !isTextVisible[index]) {
+                setState(() {
+                  isTextVisible[index] = true;
+                  widget.onToggleBottomNav(true); // Show Bottom Navigation Bar
+                });
+              } else if (details.delta.dy > 10 && isTextVisible[index]) {
+                setState(() {
+                  isTextVisible[index] = false;
+                  widget.onToggleBottomNav(false); // Hide Bottom Navigation Bar
+                });
+              }
             },
-            child: isTextVisible[index]
-                ? _buildTextView(index)
-                : _buildImageView(index),
-          ),
-        );
-      },
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              child: isTextVisible[index]
+                  ? _buildTextView(index)
+                  : _buildImageView(index),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // 챗봇 화면으로 이동
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatBotScreen()),
+          );
+        },
+        child: Icon(Icons.chat),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 

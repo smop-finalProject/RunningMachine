@@ -44,17 +44,8 @@ app.*.map.json
 /android/app/release
 
 AndroidManifest.xml
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
+# Ignore Gradle project-specific cache directory
+.gradle
 
-# IntelliJ related
-*.iml
+# Ignore Gradle build output directory
+build
