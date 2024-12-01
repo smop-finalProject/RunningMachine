@@ -13,7 +13,6 @@ class Auth extends StatelessWidget{
       nativeAppKey: "ab81cdf2604dc76d44dd51e9d1d4467c",//카카오톡 네이티브키
       javaScriptAppKey: "53c2bb71500fe4145109a1852cf2aef2",
     );
-
     await FirebaseAuth.instance.signOut();
   }
   @override

@@ -16,7 +16,7 @@ class RunningScreen extends StatefulWidget {
 }
 
 class _RunningScreenState extends State<RunningScreen> {
-  static const LatLng initialLatLng = LatLng(36.834469, 127.149245);
+  static const LatLng initialLatLng = LatLng(36.8336, 127.1792);
   GoogleMapController? mapController;
   List<LatLng> routePoints = [];
   late StreamSubscription<Position> positionStream;
@@ -82,7 +82,8 @@ class _RunningScreenState extends State<RunningScreen> {
         if (lastUpdateTime != null) {
           final elapsed = currentTime.difference(lastUpdateTime!).inSeconds;
           if (elapsed > 0) {
-            double speed = (distance / elapsed) * 3.6;
+            // 기존 속도 계산에서 km/h에서 m/s로 변환
+            double speed = distance / elapsed; // m/s 단위로 계산
             setState(() {
               currentSpeed = speed;
             });
@@ -90,7 +91,7 @@ class _RunningScreenState extends State<RunningScreen> {
         }
 
         setState(() {
-          totalDistance += distance / 1000;
+          totalDistance += distance / 1000; // km 단위로 거리 계산
         });
       }
 
@@ -189,7 +190,7 @@ class _RunningScreenState extends State<RunningScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('총 거리: ${totalDistance.toStringAsFixed(2)} km'),
-                    Text('평균 속도: ${(totalDistance / (elapsedSeconds / 3600)).toStringAsFixed(2)} km/h'),
+                    Text('평균 속도: ${(totalDistance / (elapsedSeconds / 1000)).toStringAsFixed(2)} m/s'),
                     Text('총 운동 시간: ${Duration(seconds: elapsedSeconds).inMinutes}분 ${elapsedSeconds % 60}초'),
                   ],
                 ),
@@ -205,7 +206,6 @@ class _RunningScreenState extends State<RunningScreen> {
         );
       },
     );
-
 
     // 기록 초기화
     setState(() {
@@ -242,7 +242,6 @@ class _RunningScreenState extends State<RunningScreen> {
         ;
     print('운동 기록 및 경로가 Firebase에 저장되었습니다.');
   }
-
 
   @override
   void dispose() {
@@ -286,7 +285,7 @@ class _RunningScreenState extends State<RunningScreen> {
                 child: Column(
                   children: [
                     Text('이동 거리: ${totalDistance.toStringAsFixed(2)} km'),
-                    Text('현재 속도: ${currentSpeed.toStringAsFixed(2)} km/h'),
+                    Text('현재 속도: ${currentSpeed.toStringAsFixed(2)} m/s'), // m/s로 변경
                     Text('운동 시간: ${elapsedSeconds}s'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
