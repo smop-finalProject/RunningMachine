@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
-
 class LoginWidget extends StatelessWidget {
   const LoginWidget({Key? key}) : super(key: key);
 
@@ -41,9 +40,10 @@ class LoginWidget extends StatelessWidget {
     }
   }
 
-  // 카카오 로그인 버튼 눌렀을 때 실행되는 함수
-  void onKakaoLoginPress(BuildContext context) async {
+  // 카카오 로그인 구현
+  Future<void> signInWithKakao(BuildContext context) async {
     try {
+      // 카카오톡 설치 여부 확인 후 로그인 시도
       var provider = OAuthProvider("oidc.runningmachine");
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
       var credential = provider.credential(
@@ -52,13 +52,11 @@ class LoginWidget extends StatelessWidget {
       );
 
       // Firebase 로그인
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // 카카오 로그인 성공 여부 확인
-      bool loginSuccess = await signWithKakao();
-      if (!loginSuccess) {
-        throw Exception('Kakao login failed.');
-      }
+      // 로그인 성공 후, userId 가져오기
+      final userId = userCredential.user?.uid;
+      print('카카오 로그인 성공! Firebase userId: $userId');
 
       // 로그인 성공 후, Snackbar로 로그인 성공 메시지 표시
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -73,32 +71,6 @@ class LoginWidget extends StatelessWidget {
           const SnackBar(content: Text('카카오 로그인 실패')),
         );
       });
-    }
-  }
-  // 카카오 로그인 구현
-  Future<bool> signWithKakao() async {
-    try {
-      // 카카오톡 설치 여부 확인
-      if (await isKakaoTalkInstalled()) {
-        try {
-          await UserApi.instance.loginWithKakaoTalk();
-          print('카카오톡으로 로그인 성공');
-          return true;
-        } catch (error) {
-          print('카카오톡으로 로그인 실패 $error');
-          if (error is PlatformException && error.code == 'CANCELED') {
-            return false;
-          }
-        }
-      }
-
-      // 카카오톡 설치 안 되어 있거나 실패 시 카카오 계정으로 로그인
-      await UserApi.instance.loginWithKakaoAccount();
-      print('카카오 계정으로 로그인 성공');
-      return true;
-    } catch (error) {
-      print('카카오 계정으로 로그인 실패 $error');
-      return false;
     }
   }
 
@@ -159,7 +131,7 @@ class LoginWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 16,),
+                SizedBox(height: 16),
                 // 카카오 로그인 버튼
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -171,7 +143,7 @@ class LoginWidget extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    onKakaoLoginPress(context); // 카카오 로그인 로직 호출
+                    signInWithKakao(context); // 카카오 로그인 로직 호출
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

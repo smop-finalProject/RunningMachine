@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -17,17 +18,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
     super.initState();
     _fetchRuns(_selectedDay);
   }
-
   Future<void> _fetchRuns(DateTime date) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid; // 현재 사용자 ID 가져오기
     final startOfDay = Timestamp.fromDate(DateTime(date.year, date.month, date.day));
     final endOfDay = Timestamp.fromDate(DateTime(date.year, date.month, date.day, 23, 59, 59));
 
     try {
       final snapshot = await FirebaseFirestore.instance
-          .collection('runs')
+          .collection('users') // 'users' 컬렉션
+          .doc(userId) // 현재 사용자 ID로 문서 지정
+          .collection('runs') // 'runs' 컬렉션
           .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
           .where('timestamp', isLessThanOrEqualTo: endOfDay)
-          .orderBy('timestamp', descending: false)
+          .orderBy('timestamp', descending: false) // 'timestamp'로 정렬
           .get();
 
       final runs = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
@@ -140,7 +143,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 return ListTile(
                   leading: Icon(Icons.directions_run, color: Colors.blue),
                   title: Text('거리: ${run['distance']} km'),
-                  subtitle: Text('시간: ${run['time']} 초dd'),
+                  subtitle: Text('시간: ${run['time']} 초'),
                   onTap: () => _showRunDetails(context, run),
                 );
               },
